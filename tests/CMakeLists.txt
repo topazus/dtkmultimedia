@@ -53,6 +53,9 @@ if(${QT_VERSION_MAJOR} EQUAL 6)
     # Qt6需要单独查找OpenGLWidgets模块
     find_package(Qt6 REQUIRED COMPONENTS OpenGLWidgets)
 endif()
+if(Qt6_VERSION VERSION_GREATER_EQUAL 6.10)
+    find_package(Qt${QT_VERSION_MAJOR} COMPONENTS GuiPrivate REQUIRED)
+endif()
 
 find_package(PkgConfig REQUIRED)
 find_package(OpenMP)
@@ -66,6 +69,7 @@ if (NOT ENABLE_Qt6)
 endif()
 pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gobject-2.0)
 pkg_check_modules(InferenceEngine REQUIRED ncnn opencv_mobile)
+pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET libavformat)
 
 set(TARGET_LIBS Xtst
     Qt${QT_VERSION_MAJOR}::Widgets
@@ -105,6 +109,7 @@ target_link_libraries(${BIN_NAME} PRIVATE
     ${RSVG2_LIBRARIES}
     ${InferenceEngine_LIBRARIES}
     ${TARGET_LIBS}
+    PkgConfig::FFMPEG
     -lpthread
     -lgcov
     -lgtest
